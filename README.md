@@ -1,92 +1,123 @@
 # logEasy
-A small logging library for your Javascript projects
+  A small logging library for your Javascript projects
 
-This library aims to provide a standard mechanism for logging in Client side script with hooks to send logging information to the Server side application also.
+  This library aims to provide a standard mechanism for logging in Client side script with hooks to send logging information to the Server side application also.
 
-## Setup
+  ## Features
+    - Configure logging setting from external json file.
+    - Disable all log statements with single option change.
+    - Do selective logging with severity levels.
+    - Hooks to send log information to server side code.
+    - Option to handle all the uncaught exceptions.
 
-Include the logEasy script file in your html page and you are good to go.
+  ## Setup
+
+  Include the logEasy script file in your html page and you are good to go.
 
 ## How to Use ?
 
 ### Initialization of Logger
 
-To begin using the logger just initialize the logger instance for your javascript.
+When the js file is included in the page. A default **Logger** instance is created on the global object.
+It is still recommended to configure its behaviour using configuration object to tune its behaviour.
 
-...
-Logger.init();
-...
+`Logger.init( config );`
 
-We could also Config the properties for the logger by passing appropriate options to init method of Logger.
-
-...
-Logger.init( config );
-...
 
 ### Configuration options
 
-- enabled [default : true ] : If set to false would cause all the log method(s) like log ,  trace, debug etc. to be ignored.
-- logging Levels [default : 'ALL'] : logging severity for the application based on which log method(s) are considered or ignored.Explained in details in next section.
-- logToConsole [default : true ] : If true log statements are displayed on browser console (if console object supported).
-- logToServer [default : true ] : If true then a post request is sent to the server.
-- logPostUrl [default : "/saveLog" ] : url where server request would be sent.
-- logFormat [default : 'Error of Severity : $lvl occured in $func At $time. Message : $msg at line $lineNo'] : template for logs to be created. User could specify his own template by using pseudo-variables.
+- **enabled [default : true ]**: If set to false would cause all the log method(s) like log ,  trace, debug etc. to be ignored.
 
-### Logging Levels
+- **logging Levels [ default : 'ALL' ]** : logging severity for the application based on which log method(s) are considered or ignored.Explained in details in next section.
+
+- **logToConsole [ default : true ]** : If true log statements are displayed on browser console (if console object supported).
+
+- **logToServer [ default : true ]** : If true then a post request is sent to the server.
+
+- **logPostUrl [ default : "/saveLog" ]** : url where server request would be sent.
+
+- **logFormat [ default : 'Error of Severity : $lvl occured in $func At $time. Message : $msg at line $lineNo' ]** : template for logs to be created. User could specify his own template by using pseudo-variables.
+
+- **getPropFromFile [default : false ]** : To enable extracting configuration from json file. It is useful for different setting based on environment.
+
+- **logPropFile [ default : "/logEasy/logEasy.json" ]** : Json file location (relative).Note: Place the json file in the same server location as the web package as cross domain access is not allowed.
+
+- **logPostUrl [ default : "/saveLog" ]** : Server request url for error logging . Server error object is sent along with the post request.
+
+- **showInternalLogs [ default : true ]** : Whether to log steps from within the plugin. This works only when *logToConsole* is also true.
+
+- **serverLogHandler [ default : null , Signature : function ( responseData ) ]** : Response handler when server logging is done.
+
+- **isCatchAll [ default : false ]** : Enable error handling for uncaught exceptions.
+
+- **catchAllHandler [ default : null , signature : function ( msg, url, line, column , error ) ]** : Handler for uncaught exceptions.
+
+
+### Logging Severity Levels
 
 Following logging severity levels are supported ( listed from low to high severity) :
 
-...
-TRACE
-DEBUG
-INFO
-WARN
-ERROR
-FATAL
-...
 
-Each severity level has a method associated with  it.
-If logging level is set using the configuration object it would include that and all levels above it.
+> TRACE < DEBUG < INFO < WARN < ERROR < FATAL
 
-These logging levels allow developer to control the type of message to log from the configuration object.
-Suppose developer inserts three trace() statements , 2 warn() statements and 1 fatal() statement.
-If in local setup developer requires all the information to be logged then in configuration object he could set logging level to 'ALL'.
-However in dev might require only  WARNINGS and FATAL error logs so in that case developer could set the logging level to 'WARN'.
-### Use in the application
 
-Once the logger is initialized . We can insert the logger statement anywhere in the code where logging is desired.
+When Logging is done at any of the level mentioned above,
+Then log statements would be displayed for that level and all levels greater than it.
 
-Following methods are provided for logger for logging.
+Suppose logging is done at **'INFO'** level then as per the rule,
+Log statements with severity greater than or equal to **'INFO'** i.e **'WARN'** , **'ERROR'** , **'FATAL'** would be displayed and other log statements with severity less than it i.e **'TRACE'** , **'DEBUG'** would not be displayed.
 
-...
+Other than these levels user could set Logging level as **'ALL'** to log all severity level logs or **'NONE'** to log none.
 
-trace()
-debug()
-info()
-warn()
-error()
-fatal()
-log()
-...
+Each severity level has a method associated with it i.e to log a warning we could use statement:
 
-All the methods except log method accept only one argument which could be string or custom json object or javascript error object.
-Log method accept first argument as the severity level.
+`Logger.warn( messsage );`
 
-So for logging a warning. User need to statement like :
+Similarily  we have,
 
-...
+>Logger.trace( message );
 
-Logger.warn("There is something fishy  with what you are doing.Beware!!!");
+>Logger.debug( message );
 
-...
+>Logger.info( message );
 
-But when logging using more generic log method. User need to do something like :
+>Logger.error( message );
 
-...
+>Logger.fatal( message );
 
-Logger.log( 'WARN' , "I told you already. There is something fishy.");
-...
+Note that here message could be a
 
-### Server logging
+- String
+- Usual Javascript object with key-value pair
+- Javascript error object
 
-This library also provide hook for your server side code to send the logged information to your server side code.
+### Log statement Formatting
+
+We could define a format for the log being displayed in the console.
+
+Statement could be any sentence along with any combination psuedo-variable(s).
+
+Folllowing are the psuedo-variable(s) :
+- $lvl : severity of error
+- $func : function name where the logging statement is written.
+- $msg : String message for the error.
+- $stack : If the error object is passed to the log statement, get the stack from it.
+- $lineNo : Error line number from error object.
+- $fileName : fileName of the error from error object.
+- $time : time
+
+One need to set logFormat property of configuration object using the above variables.
+
+e.g:
+
+> {
+> logFormat : You got an error of $lvl severity in $func .
+>}
+
+with severity INFO and function where the statement is invoked being test() would translate to
+
+> You got an error of INFO severity in test .
+
+ in console.
+
+ **Note**: logFormat is for the statement being displayed in console.
