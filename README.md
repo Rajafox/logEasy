@@ -1,16 +1,18 @@
 # logEasy
-  A small logging library for your Javascript projects
+  A small logging library for your Javascript projects.
 
   This library aims to provide a standard mechanism for logging in Client side script with hooks to send logging information to the Server side application also.
 
-  ## Features
-    - Configure logging setting from external json file.
-    - Disable all log statements with single option change.
+
+## Features
+  
+    -  Configure logging setting from external json file.
+    -  Disable all log statements with single option change.
     - Do selective logging with severity levels.
     - Hooks to send log information to server side code.
     - Option to handle all the uncaught exceptions.
 
-  ## Setup
+## Setup
 
   Include the logEasy script file in your html page and you are good to go.
 
