@@ -49,7 +49,7 @@
     // Handler for catching all the error its actually a handler for onerror case
     catchAllHandler : null,
     // Enable error handling for uncaught exceptions.
-    isCatchAll : true
+    isCatchAll : false
   };
 
 /**
@@ -104,7 +104,7 @@ window.onerror = function ( msg, url, line, col, error ) {
          globalConfig.logToConsole = false ;
        }
        if( globalConfig.getPropFromFile === true ){
-         ajaxRequest (globalConfig.logPropFile , function( data ){
+         ajaxRequest (globalConfig.logPropFile , 'GET', function( data ){
            // Handle the case when the file takes time to load the properties tll that time no logging statement should be executed.
            extend (globalConfig , JSON.parse (data));
            if( globalConfig.logToConsole === true && globalConfig.showInternalLogs === true ){

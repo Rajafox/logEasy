@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Log Easy Test</title>
+    <!-- <script
+			  src="https://code.jquery.com/jquery-1.12.4.min.js"
+			  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+			  crossorigin="anonymous"></script> -->
+    <script src="../logEasy.js"></script>
+  </head>
+  <body>
+    <script>
+      Logger.init({
+        loggingLevel : 'DEBUG'
+      });
+
+      function test() {
+        Logger.trace("trace1");
+        try {
+          throw new Error("hello world!");
+        } catch (e) {
+          Logger.debug(e);
+        } finally {
+
+        }
+        Logger.warn({name:"raja"});
+      }
+      Logger.fatal("fatal");
+      test();
+
+    </script>
+  </body>
+</html>

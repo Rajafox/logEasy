@@ -1,3 +1,9 @@
 {
-  "loggingLevel" : "DEBUG"
+  "enabled" : true,
+  "loggingLevel" : "ALL",
+  "logToConsole" : true,
+  "logToServer" : false,
+  "logFormat" : "Loading format from external file.By the way you got error of severity $lvl",
+  "showInternalLogs" : true,
+  "logPropFile" : "/logEasy/logEasy.json"
 }
